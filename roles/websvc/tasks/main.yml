@@ -14,7 +14,7 @@
   notify: restart nginx
   when: ansible_facts['os_family'] == "RedHat" or ansible_facts['os_family'] == "Debian"
 
-- name: Deploy nginx configuration
+- name: Apply nginx configuration
   template:
     src: nginx_conf.j2
     dest: /etc/nginx/nginx.conf
@@ -43,10 +43,9 @@
     enabled: yes
   when: ansible_facts['os_family'] == "RedHat" or ansible_facts['os_family'] == "Debian"
 
-# ----------------
+
 # Windows Tasks
-# ---------------
-# # Windows Tasks
+
 - name: Install IIS
   win_feature:
     name: Web-Server
