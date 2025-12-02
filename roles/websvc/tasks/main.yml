@@ -1,0 +1,80 @@
+---
+
+# Linux Tasks
+- name: Install Nginx
+  package:
+    name: nginx
+    state: present
+  when: ansible_facts['os_family'] == "RedHat" or ansible_facts['os_family'] == "Debian"
+
+- name: Deploy index.html for Linux
+  template:
+    src: index.html.j2
+    dest: /usr/share/nginx/html/index.html
+  notify: restart nginx
+  when: ansible_facts['os_family'] == "RedHat" or ansible_facts['os_family'] == "Debian"
+
+- name: Deploy nginx configuration
+  template:
+    src: nginx_conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify: restart nginx
+  when: ansible_facts['os_family'] == "RedHat" or ansible_facts['os_family'] == "Debian"
+
+- name: Open firewall port (firewalld)
+  firewalld:
+    port: "{{ nginx_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Open firewall port (ufw)
+  ufw:
+    rule: allow
+    port: "{{ nginx_port }}"
+    proto: tcp
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Ensure nginx is running and enabled
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+  when: ansible_facts['os_family'] == "RedHat" or ansible_facts['os_family'] == "Debian"
+
+# ----------------
+# Windows Tasks
+# ---------------
+# # Windows Tasks
+- name: Install IIS
+  win_feature:
+    name: Web-Server
+    state: present
+    include_management_tools: yes
+  when: ansible_facts['os_family'] == "Windows"
+
+- name: Deploy index.html from template
+  win_template:
+    src: index.html.j2
+    dest: "C:\\inetpub\\wwwroot\\index.html"
+  notify: restart iis
+  when: ansible_facts['os_family'] == "Windows"
+
+- name: Open IIS Firewall port
+  win_firewall_rule:
+    name: "HTTP Port {{ nginx_port }}"
+    enable: yes
+    direction: in
+    action: allow
+    localport: "{{ nginx_port }}"
+    protocol: TCP
+  when: ansible_facts['os_family'] == "Windows"
+
+- name: Ensure IIS service is running
+  win_service:
+    name: W3SVC
+    state: started
+  when: ansible_facts['os_family'] == "Windows"
+
+

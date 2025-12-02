@@ -1,0 +1,3 @@
+env_name: "DEV"
+nginx_port: 8080
+deploy_date: "{{ ansible_date_time.date }}"

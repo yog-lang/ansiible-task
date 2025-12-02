@@ -1,0 +1,9 @@
+---
+- name: Deploy Windows Web Service using websvc role
+  hosts: windows_host
+  vars_files:
+    - group_vars/windows/vars.yml      # environment variables
+    - group_vars/windows/vault.yml     # encrypted secrets
+  roles:
+    - websvc
+

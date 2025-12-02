@@ -1,0 +1,13 @@
+---
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted
+  when: ansible_facts['os_family'] == "RedHat" or ansible_facts['os_family'] == "Debian"
+
+
+# Windows handlers
+- name: restart iis
+  win_service:
+    name: W3SVC
+    state: restarted
