@@ -1,0 +1,11 @@
+---
+- name: Test custom module
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: file creation using custom module
+      create_tmp_file:
+        name: test.json
+        content: "This is a file"
+
