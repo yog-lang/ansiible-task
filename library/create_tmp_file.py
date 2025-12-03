@@ -21,8 +21,8 @@ def run_module():
             message=f"File created at {file_path}",
         )
 
-    except Exception as e:
-        module.fail_json(msg=f"Failed to create file: {e}")
+    except Exception as error_message:
+        module.fail_json(msg=f"Failed to create file: {error_message}")
 
 run_module()
 
